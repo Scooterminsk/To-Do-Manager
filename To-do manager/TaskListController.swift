@@ -9,9 +9,17 @@ import UIKit
 
 class TaskListController: UITableViewController {
 
+    // task storage
+    var taskStorage: TaskStorageProtocol = TaskStorage()
+    // task collection
+    var tasks: [TaskPriority:[TaskProtocol]] = [:]
+    
+    // display order of sections by its types
+    // index in an array matches the index of a section in the table
+    var sectionTypesPosition: [TaskPriority] = [.important, .normal]
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
