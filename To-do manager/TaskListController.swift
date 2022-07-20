@@ -12,7 +12,17 @@ class TaskListController: UITableViewController {
     // task storage
     var taskStorage: TaskStorageProtocol = TaskStorage()
     // task collection
-    var tasks: [TaskPriority:[TaskProtocol]] = [:]
+    var tasks: [TaskPriority:[TaskProtocol]] = [:] {
+        didSet {
+            for (taskGroupPriority, taskGroup) in tasks {
+                tasks[taskGroupPriority] = taskGroup.sorted { task1, task2 in
+                    let task1position = tasksStatusPosition.firstIndex(of: task1.status) ?? 0
+                    let task2position = tasksStatusPosition.firstIndex(of: task2.status) ?? 0
+                    return task1position < task2position
+                }
+            }
+        }
+    }
     // the order in which tasks are displayed by their status
     var tasksStatusPosition: [TaskStatus] = [.planned, .completed]
     
@@ -33,15 +43,6 @@ class TaskListController: UITableViewController {
         // loading and parsing of tasks from the storage
         taskStorage.loadTasks().forEach { task in
             tasks[task.type]?.append(task)
-        }
-        
-        // task list sorting
-        for (taskGroupPriority, taskGroup) in tasks {
-            tasks[taskGroupPriority] = taskGroup.sorted  { task1, task2 in
-                let task1position = tasksStatusPosition.firstIndex(of: task1.status) ?? 0
-                let task2position = tasksStatusPosition.firstIndex(of: task2.status) ?? 0
-                return task1position < task2position
-            }
         }
     }
     // MARK: - Table view data source
@@ -78,6 +79,24 @@ class TaskListController: UITableViewController {
         return title
     }
     
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // checking if the task exists
+        let taskType = sectionTypesPosition[indexPath.section]
+        guard let _ = tasks[taskType]?[indexPath.row] else {
+            return
+        }
+        
+        // checking if the task isn't done
+        guard tasks[taskType]![indexPath.row].status == .planned else {
+            // cancelling mark from current line
+            tableView.deselectRow(at: indexPath, animated: true)
+            return
+        }
+        // mark the line as done
+        tasks[taskType]![indexPath.row].status = .completed
+        // reload current table section
+        tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
+    }
     // a cell based on constraints
 /*    private func getConfiguratedTaskCell_constraints(for indexPath: IndexPath) -> UITableViewCell {
         // loading a cell prototype by its identificator
