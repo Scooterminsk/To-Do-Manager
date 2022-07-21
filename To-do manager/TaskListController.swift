@@ -31,7 +31,10 @@ class TaskListController: UITableViewController {
     var sectionTypesPosition: [TaskPriority] = [.important, .normal]
     override func viewDidLoad() {
         super.viewDidLoad()
+        // tasks loading
         loadTasks()
+        // task editing mode activation button
+        navigationItem.leftBarButtonItem = editButtonItem
     }
 
     private func loadTasks() {
@@ -96,6 +99,58 @@ class TaskListController: UITableViewController {
         tasks[taskType]![indexPath.row].status = .completed
         // reload current table section
         tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
+    }
+    
+    override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        // getting data about a task, which is needed to switch to the planned status
+        let taskType = sectionTypesPosition[indexPath.section]
+        guard let _ = tasks[taskType]?[indexPath.row] else {
+            return nil
+        }
+        // checking if the task has the done status
+        guard tasks[taskType]![indexPath.row].status == .completed else {
+            return nil
+        }
+        
+        // creating an action to change status
+        let actionSwipeInstance = UIContextualAction(style: .normal, title: "Не выполнена") { _, _, _ in
+            self.tasks[taskType]![indexPath.row].status = .planned
+            self.tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
+        }
+        // returning the configurated object
+        return UISwipeActionsConfiguration(actions: [actionSwipeInstance])
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        let taskType = sectionTypesPosition[indexPath.section]
+        // deleting the task
+        tasks[taskType]?.remove(at: indexPath.row)
+        // delete a row matching with current task
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+    }
+    
+    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        // source section
+        let taskTypeFrom = sectionTypesPosition[sourceIndexPath.section]
+        // destination section
+        let taskTypeTo = sectionTypesPosition[destinationIndexPath.section]
+        
+        // safe unwrapping of the task ang copying it
+        guard let movedTask = tasks[taskTypeFrom]?[sourceIndexPath.row] else {
+            return
+        }
+        
+        // deleting the task from the place from where it was transferred
+        tasks[taskTypeFrom]!.remove(at: sourceIndexPath.row)
+        // pasting the task into the new position
+        tasks[taskTypeTo]!.insert(movedTask, at: destinationIndexPath.row)
+        // if the section is changed, will change a type of the task according to the new position
+        if taskTypeFrom != taskTypeTo {
+            tasks[taskTypeTo]![destinationIndexPath.row].type = taskTypeTo
+        }
+        
+        // updating data
+        tableView.reloadData()
     }
     // a cell based on constraints
 /*    private func getConfiguratedTaskCell_constraints(for indexPath: IndexPath) -> UITableViewCell {
