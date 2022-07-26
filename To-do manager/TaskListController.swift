@@ -20,6 +20,13 @@ class TaskListController: UITableViewController {
                     let task2position = tasksStatusPosition.firstIndex(of: task2.status) ?? 0
                     return task1position < task2position
                 }
+                
+                // saving tasks
+                var savingArray: [TaskProtocol] = []
+                tasks.forEach { _, value in
+                    savingArray += value
+                }
+                taskStorage.saveTasks(savingArray)
             }
         }
     }
@@ -107,18 +114,42 @@ class TaskListController: UITableViewController {
         guard let _ = tasks[taskType]?[indexPath.row] else {
             return nil
         }
-        // checking if the task has the done status
-        guard tasks[taskType]![indexPath.row].status == .completed else {
-            return nil
-        }
         
         // creating an action to change status
         let actionSwipeInstance = UIContextualAction(style: .normal, title: "Не выполнена") { _, _, _ in
             self.tasks[taskType]![indexPath.row].status = .planned
             self.tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
         }
-        // returning the configurated object
-        return UISwipeActionsConfiguration(actions: [actionSwipeInstance])
+        
+        // action for transition to an edit screen
+        let actionEditInstance = UIContextualAction(style: .normal, title: "Изменить") { _, _, _ in
+            // loading a scene from storyboard
+            let editScreen = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "TaskEditController") as! TaskEditController
+            // transfering values of the editing task
+            editScreen.taskText = self.tasks[taskType]![indexPath.row].title
+            editScreen.taskType = self.tasks[taskType]![indexPath.row].type
+            editScreen.taskStatus = self.tasks[taskType]![indexPath.row].status
+            // transfering a handler for saving a task
+            editScreen.doAfterEdit = { [unowned self] title, type, status in
+                let editedTask = Task(title: title, type: type, status: status)
+                tasks[taskType]![indexPath.row] = editedTask
+                tableView.reloadData()
+            }
+            // transition to the edit screen
+            self.navigationController?.pushViewController(editScreen, animated: true)
+        }
+        // changing color of a button with action
+        actionEditInstance.backgroundColor = .darkGray
+        
+        // creating an object that will describe actions; depending on task status it will be showed 1 or 2 actions
+        let actionConfiguration: UISwipeActionsConfiguration
+        if tasks[taskType]![indexPath.row].status == .completed {
+            actionConfiguration = UISwipeActionsConfiguration(actions: [actionSwipeInstance, actionEditInstance])
+        } else {
+            actionConfiguration = UISwipeActionsConfiguration(actions: [actionEditInstance])
+        }
+        
+        return actionConfiguration
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -184,6 +215,30 @@ class TaskListController: UITableViewController {
         return cell
     } */
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toCreateScreen" {
+            let destination = segue.destination as! TaskEditController
+            destination.doAfterEdit = { [unowned self] title, type, status in
+                let newTask = Task(title: title, type: type, status: status)
+                tasks[type]?.append(newTask)
+                tableView.reloadData()
+            }
+        }
+    }
+    
+    // getting task list their checking and loading to the task property
+    func setTasks(_ taskCollection: [TaskProtocol]) {
+        // preparation of the collection with tasks
+        // will use only those tasks for witch a section is chosen
+        sectionTypesPosition.forEach { taskType in
+            tasks[taskType] = []
+        }
+        // loading and checking tasks from the storage
+        taskCollection.forEach { task in
+            tasks[task.type]?.append(task)
+        }
+        
+    }
     // a cell based on stack
     private func getConfiguratedTaskCell_stack(for indexPath: IndexPath) -> UITableViewCell {
         // loading a cell prototype by its identificator
