@@ -47,6 +47,13 @@ class TaskEditController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard indexPath.row != 2 else {
+            tableView.deselectRow(at: indexPath, animated: true)
+            return
+        }
+    }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toTaskTypeScreen" {
@@ -65,12 +72,23 @@ class TaskEditController: UITableViewController {
 
     @IBAction func saveTask(_ sender: UIBarButtonItem) {
         // getting an actual value
-        let title = taskTitle?.text ?? ""
+        var title = taskTitle?.text ?? ""
         let type = taskType
         let status: TaskStatus = taskStatusSwitch.isOn ? .completed : .planned
-        // calling the handler
-        doAfterEdit?(title, type, status)
-        // back to the previous screen
-        navigationController?.popViewController(animated: true)
+        // do the check and if its true call the handler
+        if !taskTitle.hasText {
+            let alert = UIAlertController(title: "Введите название задачи!", message: nil, preferredStyle: .alert)
+            let action = UIAlertAction(title: "Назад", style: .cancel)
+            alert.addAction(action)
+            self.present(alert, animated: true)
+        } else if taskTitle.text?.first == " " {
+            title = taskTitle.text?.trimmingCharacters(in: .whitespaces) ?? ""
+            doAfterEdit?(title, type, status)
+            // back to the previous screen
+            navigationController?.popViewController(animated: true)
+        } else {
+            doAfterEdit?(title, type, status)
+            navigationController?.popViewController(animated: true)
+        }
     }
 }
