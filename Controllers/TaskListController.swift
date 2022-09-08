@@ -82,7 +82,11 @@ class TaskListController: UITableViewController {
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         var title: String?
         let taskType = sectionTypesPosition[section]
-        if taskType == .important {
+        if taskType == .important && tasks[sectionTypesPosition[section]]?.count ?? 0 == 0 {
+            title = "Важные: Задачи отсутствуют"
+        } else if taskType == .normal && tasks[sectionTypesPosition[section]]?.count ?? 0 == 0 {
+            title = "Текущие: Задачи отсутствуют"
+        } else if taskType == .important {
             title = "Важные"
         } else if taskType == .normal {
             title = "Текущие"
@@ -162,6 +166,7 @@ class TaskListController: UITableViewController {
         tasks[taskType]?.remove(at: indexPath.row)
         // delete a row matching with current task
         tableView.deleteRows(at: [indexPath], with: .automatic)
+        tableView.reloadData()
     }
     
     // MARK: - Move row at IndexPath
