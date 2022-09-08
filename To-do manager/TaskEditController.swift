@@ -47,14 +47,14 @@ class TaskEditController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
     }
-    
+    // MARK: - Did select row at IndexPath
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard indexPath.row != 2 else {
             tableView.deselectRow(at: indexPath, animated: true)
             return
         }
     }
-
+    // MARK: - Prepare for segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toTaskTypeScreen" {
             // a reference for destination controller
@@ -69,7 +69,7 @@ class TaskEditController: UITableViewController {
             }
         }
     }
-
+    // MARK: - Action method for tasks saving
     @IBAction func saveTask(_ sender: UIBarButtonItem) {
         // getting an actual value
         var title = taskTitle?.text ?? ""

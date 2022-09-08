@@ -36,6 +36,7 @@ class TaskListController: UITableViewController {
     // display order of sections by its types
     // index in an array matches the index of a section in the table
     var sectionTypesPosition: [TaskPriority] = [.important, .normal]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // tasks loading
@@ -77,7 +78,7 @@ class TaskListController: UITableViewController {
         return getConfiguratedTaskCell_stack(for: indexPath)
     }
     
-    // setting title of sections
+    // MARK: - Setting title of sections
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         var title: String?
         let taskType = sectionTypesPosition[section]
@@ -89,6 +90,7 @@ class TaskListController: UITableViewController {
         return title
     }
     
+    // MARK: - Did select row at IndexPath
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // checking if the task exists
         let taskType = sectionTypesPosition[indexPath.section]
@@ -108,6 +110,7 @@ class TaskListController: UITableViewController {
         tableView.reloadSections(IndexSet(arrayLiteral: indexPath.section), with: .automatic)
     }
     
+    // MARK: - Leading swipe actions configuration for row at
     override func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         // getting data about a task, which is needed to switch to the planned status
         let taskType = sectionTypesPosition[indexPath.section]
@@ -152,6 +155,7 @@ class TaskListController: UITableViewController {
         return actionConfiguration
     }
     
+    // MARK: - Table view commit
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         let taskType = sectionTypesPosition[indexPath.section]
         // deleting the task
@@ -160,6 +164,7 @@ class TaskListController: UITableViewController {
         tableView.deleteRows(at: [indexPath], with: .automatic)
     }
     
+    // MARK: - Move row at IndexPath
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         // source section
         let taskTypeFrom = sectionTypesPosition[sourceIndexPath.section]
@@ -215,6 +220,7 @@ class TaskListController: UITableViewController {
         return cell
     } */
     
+    // MARK: - Prepare for segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "toCreateScreen" {
             let destination = segue.destination as! TaskEditController
@@ -226,7 +232,7 @@ class TaskListController: UITableViewController {
         }
     }
     
-    // getting task list their checking and loading to the task property
+    // MARK: - Getting task list their checking and loading to the task property
     func setTasks(_ taskCollection: [TaskProtocol]) {
         // preparation of the collection with tasks
         // will use only those tasks for witch a section is chosen
@@ -239,7 +245,7 @@ class TaskListController: UITableViewController {
         }
         
     }
-    // a cell based on stack
+    // MARK: - A cell based on stack
     private func getConfiguratedTaskCell_stack(for indexPath: IndexPath) -> UITableViewCell {
         // loading a cell prototype by its identificator
         let cell = tableView.dequeueReusableCell(withIdentifier: "taskCellStack", for: indexPath) as! TaskCell
@@ -267,7 +273,7 @@ class TaskListController: UITableViewController {
         
     }
     
-    // returning a symbol for a needed task type
+    // MARK: - Returning a symbol for a needed task type
     private func getSymbolForTask(with status: TaskStatus) -> String {
         var resultSymbol: String
         if status == .planned {
