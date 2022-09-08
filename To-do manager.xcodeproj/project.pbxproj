@@ -51,9 +51,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E4403B8B28CA18EA00116596 /* To-do manager */ = {
+			isa = PBXGroup;
+			children = (
+				E47C1A16286F74F50074D00D /* Info.plist */,
+			);
+			path = "To-do manager";
+			sourceTree = "<group>";
+		};
 		E44A30B0288076F10068E52E /* View */ = {
 			isa = PBXGroup;
 			children = (
+				E47A37C328CA170F008AB814 /* Storyboards */,
 				E44A30B1288077060068E52E /* Cells */,
 			);
 			path = View;
@@ -78,12 +87,25 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		E47A37C328CA170F008AB814 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				E47C1A0E286F74F40074D00D /* Main.storyboard */,
+				E47C1A13286F74F50074D00D /* LaunchScreen.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
 		E47C19FC286F74F40074D00D = {
 			isa = PBXGroup;
 			children = (
+				E4403B8B28CA18EA00116596 /* To-do manager */,
 				E44A30B0288076F10068E52E /* View */,
 				E44D6C7A286F778900FCC1A1 /* Model */,
-				E47C1A07286F74F40074D00D /* To-do manager */,
+				E47C1A07286F74F40074D00D /* Controllers */,
+				E47C1A08286F74F40074D00D /* AppDelegate.swift */,
+				E47C1A0A286F74F40074D00D /* SceneDelegate.swift */,
+				E47C1A11286F74F50074D00D /* Assets.xcassets */,
 				E47C1A06286F74F40074D00D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -96,20 +118,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E47C1A07286F74F40074D00D /* To-do manager */ = {
+		E47C1A07286F74F40074D00D /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				E47C1A08286F74F40074D00D /* AppDelegate.swift */,
-				E47C1A0A286F74F40074D00D /* SceneDelegate.swift */,
-				E47C1A0E286F74F40074D00D /* Main.storyboard */,
 				E44D6C78286F768D00FCC1A1 /* TaskListController.swift */,
 				E4F8EC9D288FE1D7002775B8 /* TaskEditController.swift */,
 				E4CB70E1288FEC44003ECB3F /* TaskTypeController.swift */,
-				E47C1A11286F74F50074D00D /* Assets.xcassets */,
-				E47C1A13286F74F50074D00D /* LaunchScreen.storyboard */,
-				E47C1A16286F74F50074D00D /* Info.plist */,
 			);
-			path = "To-do manager";
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

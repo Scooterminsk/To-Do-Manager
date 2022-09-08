@@ -64,7 +64,7 @@ class TaskTypeController: UITableViewController {
         }
         return cell
     }
-
+    // MARK: - Did select row at IndexPath
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // getting chosen type
         let selectedType = taskTypesInformation[indexPath.row].type
