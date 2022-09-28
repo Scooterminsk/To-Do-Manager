@@ -54,6 +54,12 @@
 		E4403B8B28CA18EA00116596 /* To-do manager */ = {
 			isa = PBXGroup;
 			children = (
+				E44A30B0288076F10068E52E /* View */,
+				E44D6C7A286F778900FCC1A1 /* Model */,
+				E47C1A07286F74F40074D00D /* Controllers */,
+				E47C1A08286F74F40074D00D /* AppDelegate.swift */,
+				E47C1A0A286F74F40074D00D /* SceneDelegate.swift */,
+				E47C1A11286F74F50074D00D /* Assets.xcassets */,
 				E47C1A16286F74F50074D00D /* Info.plist */,
 			);
 			path = "To-do manager";
@@ -100,12 +106,6 @@
 			isa = PBXGroup;
 			children = (
 				E4403B8B28CA18EA00116596 /* To-do manager */,
-				E44A30B0288076F10068E52E /* View */,
-				E44D6C7A286F778900FCC1A1 /* Model */,
-				E47C1A07286F74F40074D00D /* Controllers */,
-				E47C1A08286F74F40074D00D /* AppDelegate.swift */,
-				E47C1A0A286F74F40074D00D /* SceneDelegate.swift */,
-				E47C1A11286F74F50074D00D /* Assets.xcassets */,
 				E47C1A06286F74F40074D00D /* Products */,
 			);
 			sourceTree = "<group>";
